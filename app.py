@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 # Bedrock client
 REGION = os.environ.get("AWS_REGION", "us-east-1")
-MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "us.amazon.nova-micro-v1:0")
+MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "us.anthropic.claude-haiku-4-5-20251001-v1:0")
 
 
 def call_bedrock(system_prompt: str, user_message: str, max_tokens: int = 1000) -> str:
