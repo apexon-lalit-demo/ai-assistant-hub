@@ -16,20 +16,13 @@ def call_bedrock(system_prompt: str, user_message: str, max_tokens: int = 1000) 
     """Call AWS Bedrock with a system prompt and user message."""
     try:
         bedrock = boto3.client("bedrock-runtime", region_name=REGION)
-        response = bedrock.invoke_model(
+        response = bedrock.converse(
             modelId=MODEL_ID,
-            contentType="application/json",
-            accept="application/json",
-            body=json.dumps({
-                "anthropic_version": "bedrock-2023-05-31",
-                "max_tokens": max_tokens,
-                "temperature": 0.7,
-                "system": system_prompt,
-                "messages": [{"role": "user", "content": user_message}],
-            }),
+            system=[{"text": system_prompt}],
+            messages=[{"role": "user", "content": [{"text": user_message}]}],
+            inferenceConfig={"maxTokens": max_tokens, "temperature": 0.7},
         )
-        result = json.loads(response["body"].read())
-        return result.get("content", [{}])[0].get("text", "No response generated.")
+        return response["output"]["message"]["content"][0]["text"]
     except Exception as e:
         return f"Error: {str(e)}"
 
